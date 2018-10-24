@@ -4,12 +4,20 @@ from .models import Produto
 from .models import Compra
 
 
-admin.site.register(Campista)
-admin.site.register(Produto)
-admin.site.register(Compra)
+class CampistaAdmin(admin.ModelAdmin):
+	list_display = ('nome', 'tribo')
+
+class ProdutoAdmin(admin.ModelAdmin):
+	list_display = ('nome', 'valor', 'quantidade','total')
+
+class CompraAdmin(admin.ModelAdmin):
+	list_display = ('produto','quantidade','pago', 'nome')
+
+	def guardiao(self,obj):
+		return obj.nome
 
 
-#class CampistaAdmin(admin.ModelAdmin)
-#	list_dysplay = ('nome', 'tribo')
+admin.site.register(Campista, CampistaAdmin)
+admin.site.register(Produto, ProdutoAdmin)
+admin.site.register(Compra, CompraAdmin)
 
-# Register your models here.
