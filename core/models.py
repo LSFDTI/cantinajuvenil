@@ -1,5 +1,6 @@
 from django.db import models
 import math
+from django.db.models import signals
 
 
 class Campista(models.Model):
@@ -26,8 +27,13 @@ class Produto(models.Model):
 class Compra(models.Model):
 	nome = models.ForeignKey(Campista,on_delete=models.CASCADE)
 	produto = models.ForeignKey(Produto,on_delete=models.CASCADE)
-	quantidade = models.IntegerField()
+	qntd = models.IntegerField()
 	pago = models.BooleanField(default = False)
-	
-	def __str__(self):
-		return self.nome
+
+
+
+def updestoque(sender, instance, **kwargs):
+	instance.produto.quantidade -= instance.qntd
+	instance.produto.save()
+
+signals.post_save.connect(updestoque, sender=Compra, dispatch_uid="updestoque_count")
